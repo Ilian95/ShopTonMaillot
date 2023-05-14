@@ -1,6 +1,52 @@
 #include <stdio.h>
 
+//Structure Produit
+typedef struct {
+  char nom[30];
+  int num_ref;
+  int qte;
+  int prix;
+  char taille[6];
+}Produit;
+
+//Fonction créant un produit
+Produit CreateProduit(){
+  Produit p;
+  
+  printf("Entrer le nom du produit: \n");
+  scanf("%s",p.nom);
+  printf("Entrer le num de réference: \n");
+  scanf("%d",&p.num_ref);
+  printf("Entrer la quantité du produit: \n");
+  scanf("%d",&p.qte);
+  printf("Entrer le prix du produit: \n");
+  scanf("%d",&p.prix);
+  printf("Entrer la taille du produit : (petit moyen ou grand) \n");
+  scanf("%s",p.taille);
+
+  return p;
+}
+
+//Permet de stocker un produit dans un fichier
+void FichierProduit(Produit p){
+  FILE *fichier;
+
+  fichier = fopen("nom_fichier", "w");
+  fprintf(fichier , "%s \n" ,p.nom);
+  fprintf( fichier , "%d \n" ,p.num_ref);
+  fprintf( fichier , "%d \n" ,p.qte);
+  fprintf( fichier , "%d \n" ,p.prix);
+  fprintf( fichier , "%s \n" ,p.taille);
+  fclose(fichier);
+}
+
 int main(void) {
-  printf("Hello World\n");
+  FILE *fichier;
+  Produit p;
+
+  p = CreateProduit();
+
+  FichierProduit(p);
+  
   return 0;
 }
