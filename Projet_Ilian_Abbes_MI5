@@ -1,52 +1,101 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
-//Structure Produit
+// Structure Produit
 typedef struct {
   char nom[30];
   int num_ref;
   int qte;
   int prix;
-  char taille[6];
-}Produit;
+  int taille;
+} Produit;
 
-//Fonction créant un produit
-Produit CreateProduit(){
+// Fonction créant un produit
+Produit CreateProduit() {
   Produit p;
-  
+
   printf("Entrer le nom du produit: \n");
-  scanf("%s",p.nom);
-  printf("Entrer le num de réference: \n");
-  scanf("%d",&p.num_ref);
-  printf("Entrer la quantité du produit: \n");
-  scanf("%d",&p.qte);
+  scanf("%s", p.nom);
+  while(strlen(p.nom) > 30 || strlen(p.nom) <= 0){
+    printf("Erreur sur le nom : ");
+    printf("Entrer le nom du produit: \n");
+    scanf("%s", p.nom);
+  }
+  //Choisi un num de ref aléatoire pour le produit
+  p.num_ref = rand() % 1001 + 10000;
+  //Choisi une quantité aléatoire pour le produit
+  p.qte = rand() % 101;
   printf("Entrer le prix du produit: \n");
-  scanf("%d",&p.prix);
-  printf("Entrer la taille du produit : (petit moyen ou grand) \n");
-  scanf("%s",p.taille);
+  scanf("%d", &p.prix);
+  do {
+    printf("Entrer la taille du produit : \n - 1 pour petit,\n - 2 pour moyen, \n - 4 pour grand, \n");
+    scanf("%d", &p.taille);
+  } while ((p.taille != 1) && (p.taille != 2) && (p.taille != 4));
 
   return p;
 }
 
-//Permet de stocker un produit dans un fichier
-void FichierProduit(Produit p){
+// Permet de stocker un produit dans un fichier
+FILE* FichierProduit(Produit p) {
   FILE *fichier;
+  char nom[30];
 
-  fichier = fopen("nom_fichier", "w");
-  fprintf(fichier , "%s \n" ,p.nom);
-  fprintf( fichier , "%d \n" ,p.num_ref);
-  fprintf( fichier , "%d \n" ,p.qte);
-  fprintf( fichier , "%d \n" ,p.prix);
-  fprintf( fichier , "%s \n" ,p.taille);
+  printf("Saisissez le nom du fichier pour le produit: %s \n", p.nom);
+  scanf("%s.txt", nom);
+
+  fichier = fopen(nom, "w");
+
+  // Verifie l'accessibilité du fichier
+  if (fichier == NULL) {
+    printf("Ouverture du fichier impossible\n");
+    exit(1);
+  }
+
+  // Ecrit chaque valeur du produit dans un fichier
+  fprintf(fichier, "%s \n", p.nom);
+  fprintf(fichier, "%d \n", p.num_ref);
+  fprintf(fichier, "%d \n", p.qte);
+  fprintf(fichier, "%d \n", p.prix);
+  fprintf(fichier, "%d \n", p.taille);
   fclose(fichier);
+
+  return fichier;
 }
 
 int main(void) {
-  FILE *fichier;
-  Produit p;
+  srand(time(NULL));
 
-  p = CreateProduit();
+  // Créé un fichier maillot psg
+  Produit p1;
+  FILE *fichier1;
+  p1 = CreateProduit();
+  fichier1 = FichierProduit(p1);
 
-  FichierProduit(p);
-  
+  // Créé un fichier maillot real
+  Produit p2;
+  FILE *fichier2;
+  p2 = CreateProduit();
+  fichier2 = FichierProduit(p2);
+
+  // Créé un fichier maillot barca
+  Produit p3;
+  FILE *fichier3;
+  p3 = CreateProduit();
+  fichier3 = FichierProduit(p3);
+
+  // Créé un fichier maillot city
+  Produit p4;
+  FILE *fichier4;
+  p4 = CreateProduit();
+  fichier4 = FichierProduit(p4);
+
+  // Créé un fichier maillot bayern
+  Produit p5;
+  FILE *fichier5;
+  p5 = CreateProduit();
+  fichier5 = FichierProduit(p5);
+
   return 0;
 }
