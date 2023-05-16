@@ -69,6 +69,50 @@ FILE* FichierProduit(Produit p) {
 
 
 
+
+// Structure Client
+typedef struct{
+  char nom[50];
+  char prenom[50];
+  char historique_achat[2];
+}Client;
+
+
+// Fonction qui crée un client 
+Client créer_client(){
+  Client client;
+  printf("Entrer le nom du client \n");
+  scanf("%s",client.nom);
+  printf("Entrer le prénom du client \n");
+  scanf("%s",client.prenom);
+  return client;
+}
+
+// Permet de stocker un client dans fichier
+FILE* FichiersClient(Client client){
+  FILE* fichier;
+    char nom[50];
+
+  printf("Saisissez le nom du fichier pour le client: %s \n", client.nom);
+  scanf("%s.txt", nom);
+
+  fichier = fopen(nom, "w");
+
+  // Verifie l'accessibilité du fichier
+  if (fichier == NULL) {
+    printf("Ouverture du fichier impossible\n");
+    exit(1);
+  }
+
+  // Ecrit les données du client dans un fichier
+  fprintf(fichier, "%s \n", client.nom);
+  fprintf(fichier, "%s \n", client.prenom);
+
+  return fichier;
+}
+
+
+
 int main(void) {
   srand(time(NULL));
 
@@ -101,6 +145,12 @@ int main(void) {
   FILE *fichier5;
   p5 = CreateProduit();
   fichier5 = FichierProduit(p5);
+  
+  
+  // Crée client 1
+  FILE *fichierclient1;
+  Client client1 = créer_client();
+  fichierclient1=FichiersClient(client1);
 
   return 0;
 }
