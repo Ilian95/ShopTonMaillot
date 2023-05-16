@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 
+
 // Structure Produit
 typedef struct {
   char nom[30];
@@ -11,6 +12,7 @@ typedef struct {
   int prix;
   int taille;
 } Produit;
+
 
 // Fonction créant un produit
 Produit CreateProduit() {
@@ -36,6 +38,7 @@ Produit CreateProduit() {
 
   return p;
 }
+
 
 // Permet de stocker un produit dans un fichier
 FILE* FichierProduit(Produit p) {
@@ -63,6 +66,8 @@ FILE* FichierProduit(Produit p) {
 
   return fichier;
 }
+
+
 
 int main(void) {
   srand(time(NULL));
