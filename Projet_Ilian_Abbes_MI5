@@ -135,6 +135,8 @@ void Gestion(){
 }
 
 
+
+
 // Structure Client
 typedef struct{
   char nom[50];
@@ -158,7 +160,7 @@ FILE* FichiersClient(Client client){
   FILE* fichier;
     char nom[50];
 
-  printf("Saisissez le nom du fichier pour le client: %s \n", client.nom);
+  printf("Saisissez le nom du fichier pour le client: %s %s \n", client.nom,client.prenom);
   scanf("%s.txt", nom);
 
   fichier = fopen(nom, "w");
@@ -175,6 +177,45 @@ FILE* FichiersClient(Client client){
 
   return fichier;
 }
+
+
+
+
+  // Mode Achat
+
+  void Achat(){
+
+    printf("\n");
+    printf("##################################### \n");
+    printf("             MODE ACHAT \n");
+    printf("##################################### \n");
+    printf("\n");
+    
+    char** historique_achat=NULL;
+    int choix1;
+    printf("Appuyer sur 1 si vous déja un compte sinon appuyer sur 2 pour créer votre compte.\n ");
+    scanf("%d",&choix1);
+    
+
+    switch(choix1){
+      case 1 :
+        printf("Vos derniers achat sont : %s \n", **historique_achat);
+        break;
+      
+      case 2 :
+        printf("Vous allez créer votre compte\n");
+        Client client=créer_client();
+        FILE*fichierclient=FichiersClient(client);
+        break;
+      
+      default :
+        printf("Erreur de saisie...");
+        Achat();
+        break;
+    }
+}
+
+
 
 
 
@@ -241,6 +282,7 @@ int main(void) {
   }
   else if(strcmp(mode, "achat") == 0) {
     printf("Bienvenue dans le mode achat \n");
+    Achat();
   }
   else{
     printf("Erreur de saisie... \n");
