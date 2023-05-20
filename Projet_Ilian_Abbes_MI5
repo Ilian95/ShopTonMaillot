@@ -4,13 +4,14 @@
 #include <time.h>
 
 
+
 // Structure Produit
 typedef struct {
   char nom[30];
   int num_ref;
   int qte;
   int prix;
-  int taille;
+  char taille[20];
 } Produit;
 
 
@@ -31,10 +32,9 @@ Produit CreateProduit() {
   p.qte = rand() % 101;
   printf("Entrer le prix du produit: \n");
   scanf("%d", &p.prix);
-  do {
-    printf("Entrer la taille du produit : \n - 1 pour petit,\n - 2 pour moyen, \n - 4 pour grand, \n");
-    scanf("%d", &p.taille);
-  } while ((p.taille != 1) && (p.taille != 2) && (p.taille != 4));
+  
+  printf("Entrer la taille du produit : (petit, moyen ou grand) \n");
+  scanf("%s", p.taille);
 
   return p;
 }
@@ -45,9 +45,9 @@ FILE* FichierProduit(Produit p) {
   FILE *fichier;
   char nom[30];
 
-  printf("Saisissez le nom du fichier pour le produit: %s \n", p.nom);
-  scanf("%s.txt", nom);
-
+  strcpy(nom,p.nom);
+  
+  strcat(nom, ".txt");
   fichier = fopen(nom, "w");
 
   // Verifie l'accessibilité du fichier
@@ -61,13 +61,78 @@ FILE* FichierProduit(Produit p) {
   fprintf(fichier, "%d \n", p.num_ref);
   fprintf(fichier, "%d \n", p.qte);
   fprintf(fichier, "%d \n", p.prix);
-  fprintf(fichier, "%d \n", p.taille);
+  fprintf(fichier, "%s \n", p.taille);
+  
   fclose(fichier);
+
+  FILE* fichier2 = fopen("produit.txt", "a");
+  fprintf(fichier, "%s \n", p.nom);
+  fclose(fichier2);
 
   return fichier;
 }
 
 
+//Affiche la liste des produits
+void ListP(){
+  FILE* f;
+  f = fopen("produit.txt", "r");
+  if (f == NULL){
+    printf("Ouverture du fichier impossible\n");
+    exit(1);
+  }
+
+  printf("\nVoici la liste des produits :\n\n");
+  
+  char str[30];
+  while(fgets(str, 30, f) != NULL){ 
+    printf("- %s", str);
+  }
+  printf("\n");
+
+  fclose(f);
+}
+
+
+//Lance le mode gestion
+void Gestion(){
+  Produit p;
+  
+  printf("\n");
+  printf("##################################### \n");
+  printf("             MODE GESTION \n");
+  printf("##################################### \n");
+  printf("\n");
+
+  int choix;
+  printf("Appuyer sur 1 pour la liste des produits; \n \nAppuyer sur 2 pour chercher le stock d'un produit; \n \nAppuyer sur 3 pour augmenter le stock d'un produit; \n \nAppuyer sur 4 pour afficher la place disponible dans   le magasin; \n \nAppuyer sur 5 pour ajouter un produit; \n\n");
+  scanf("%d", &choix);
+
+  switch(choix){
+    case 1:
+      ListP();
+      break;
+    case 2:
+      printf("A FAIRE");
+      break;
+    case 3:
+      printf("A FAIRE");
+      break;
+    case 4:
+      printf("A FAIRE");
+      break;
+    case 5:
+      p = CreateProduit();
+      FILE* f = FichierProduit(p);
+      printf("Voici la nouvelle liste des produits:\n");
+      ListP();
+      break;
+    default:
+      printf("Erreur de saisie...");
+      Gestion();
+      break;
+  }
+}
 
 
 // Structure Client
@@ -114,43 +179,77 @@ FILE* FichiersClient(Client client){
 
 
 int main(void) {
-  srand(time(NULL));
 
-  // Créé un fichier maillot psg
+  //Initialise les premiers produits
+  
+  //Produit PSG
   Produit p1;
-  FILE *fichier1;
-  p1 = CreateProduit();
-  fichier1 = FichierProduit(p1);
+  strcpy(p1.nom,"PSG");
+  p1.num_ref = rand() % 1001 + 10000;
+  p1.qte = rand() % 101;
+  p1.prix = 55;
+  strcpy(p1.taille,"moyen");
+  FILE* f1 = FichierProduit(p1);
 
-  // Créé un fichier maillot real
+  //Produit REAL
   Produit p2;
-  FILE *fichier2;
-  p2 = CreateProduit();
-  fichier2 = FichierProduit(p2);
-
-  // Créé un fichier maillot barca
+  strcpy(p2.nom,"REAL");
+  p2.num_ref = rand() % 1001 + 10000;
+  p2.qte = rand() % 101;
+  p2.prix = 55;
+  strcpy(p2.taille,"moyen");
+  FILE* f2 = FichierProduit(p2);
+  
+  //Produit BARCA
   Produit p3;
-  FILE *fichier3;
-  p3 = CreateProduit();
-  fichier3 = FichierProduit(p3);
+  strcpy(p3.nom,"BARCA");
+  p3.num_ref = rand() % 1001 + 10000;
+  p3.qte = rand() % 101;
+  p3.prix = 55;
+  strcpy(p3.taille,"moyen");
+  FILE* f3 = FichierProduit(p3);
 
-  // Créé un fichier maillot city
+  //Produit CITY
   Produit p4;
-  FILE *fichier4;
-  p4 = CreateProduit();
-  fichier4 = FichierProduit(p4);
-
-  // Créé un fichier maillot bayern
+  strcpy(p4.nom,"CITY");
+  p4.num_ref = rand() % 1001 + 10000;
+  p4.qte = rand() % 101;
+  p4.prix = 55;
+  strcpy(p4.taille,"moyen");
+  FILE* f4 = FichierProduit(p4);
+  
+  //Produit BAYERN
   Produit p5;
-  FILE *fichier5;
-  p5 = CreateProduit();
-  fichier5 = FichierProduit(p5);
-  
-  
+  strcpy(p5.nom,"BAYERN");
+  p5.num_ref = rand() % 1001 + 10000;
+  p5.qte = rand() % 101;
+  p5.prix = 55;
+  strcpy(p5.taille,"moyen");
+  FILE* f5 = FichierProduit(p5);
+
   // Crée client 1
   FILE *fichierclient1;
   Client client1 = créer_client();
   fichierclient1=FichiersClient(client1);
+  
+  //Permet de choisir entre mode gestion ou achat
+  char mode[30];  
+  printf("Bonjour !\nChoisissez entre mode gestion ou mode achat: \n");
+  scanf("%s",mode);
+  if(strcmp(mode, "gestion") == 0) {
+    Gestion();
+  }
+  else if(strcmp(mode, "achat") == 0) {
+    printf("Bienvenue dans le mode achat \n");
+  }
+  else{
+    printf("Erreur de saisie... \n");
+    exit(1);
+  }
+
+  //Supprime le contenu du fichier produit.txt
+  FILE* f = fopen("produit.txt", "w");
+  fclose(f);
 
   return 0;
 }
