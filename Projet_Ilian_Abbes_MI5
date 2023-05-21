@@ -15,6 +15,55 @@ typedef struct {
 } Produit;
 
 
+//Affiche la liste des produits
+void ListP(){
+  FILE* f;
+  f = fopen("produit.txt", "r");
+  if (f == NULL){
+    printf("Ouverture du fichier impossible\n");
+    exit(1);
+  }
+
+  printf("\nVoici la liste des produits :\n\n");
+  
+  char str[30];
+  while(fgets(str, 30, f) != NULL){ 
+    printf("- %s", str);
+  }
+  printf("\n");
+
+  fclose(f);
+}
+
+
+//Fonction permettant de chercher le stock d'un produit
+void SearchStock(){
+  char nom[30];
+  FILE* f = NULL;
+  char stock[6];
+  char nomf[30];
+  
+  printf("\nSaisissez le nom du produit que vous recherchez:\n\n");
+  scanf("%s",nom);
+
+  strcpy(nomf, nom);
+  strcat(nom, ".txt");
+
+  f = fopen(nom, "r");
+  if (f == NULL) {
+    printf("Le produit que vous chercher n'existe pas.\n");  
+  } 
+  else{
+    fgets(stock, 6, f);
+    fgets(stock, 6, f);
+    fgets(stock, 6, f);
+    fgets(stock, 6, f);
+    printf("\nStock du produit %s : %s\n",nomf ,stock);
+  }
+  fclose(f);
+}
+
+
 // Fonction créant un produit
 Produit CreateProduit() {
   Produit p;
@@ -73,47 +122,27 @@ FILE* FichierProduit(Produit p) {
 }
 
 
-//Affiche la liste des produits
-void ListP(){
-  FILE* f;
-  f = fopen("produit.txt", "r");
-  if (f == NULL){
-    printf("Ouverture du fichier impossible\n");
-    exit(1);
-  }
-
-  printf("\nVoici la liste des produits :\n\n");
-  
-  char str[30];
-  while(fgets(str, 30, f) != NULL){ 
-    printf("- %s", str);
-  }
-  printf("\n");
-
-  fclose(f);
-}
-
-
 //Lance le mode gestion
 void Gestion(){
   Produit p;
-  
-  printf("\n");
-  printf("##################################### \n");
-  printf("             MODE GESTION \n");
-  printf("##################################### \n");
-  printf("\n");
 
   int choix;
-  printf("Appuyer sur 1 pour la liste des produits; \n \nAppuyer sur 2 pour chercher le stock d'un produit; \n \nAppuyer sur 3 pour augmenter le stock d'un produit; \n \nAppuyer sur 4 pour afficher la place disponible dans   le magasin; \n \nAppuyer sur 5 pour ajouter un produit; \n\n");
+  printf("            ACCEUIL                \n\n");
+  printf("Appuyer sur 1 pour la liste des produits; \n \nAppuyer sur 2 pour chercher le stock d'un produit; \n \nAppuyer sur 3 pour augmenter le stock d'un produit; \n \nAppuyer sur 4 pour afficher la place disponible dans   le magasin; \n \nAppuyer sur 5 pour ajouter un produit; \n \nAppuyer sur 6 pour quitter;\n \n");
   scanf("%d", &choix);
 
   switch(choix){
     case 1:
       ListP();
+      printf("\nRetour à l'acceuil...\n\n");
+      printf("##################################### \n\n");
+      Gestion();
       break;
     case 2:
-      printf("A FAIRE");
+      SearchStock();
+      printf("\nRetour à l'acceuil...\n\n");
+      printf("##################################### \n\n");
+      Gestion();
       break;
     case 3:
       printf("A FAIRE");
@@ -123,17 +152,24 @@ void Gestion(){
       break;
     case 5:
       p = CreateProduit();
+      printf("\n<Produit créé>\n");
       FILE* f = FichierProduit(p);
-      printf("Voici la nouvelle liste des produits:\n");
-      ListP();
+      printf("\n<Produit enregistré dans un fichier>\n");
+      printf("\nRetour à l'acceuil...\n\n\n");
+      printf("##################################### \n\n");
+      Gestion();
+      break;
+    case 6:
+      printf("\nPassez une bonne journée, au revoir ! \n");
       break;
     default:
-      printf("Erreur de saisie...");
+      printf("\nErreur de saisie... \n");
+      printf("\nRetour à l'acceuil...\n\n");
+      printf("##################################### \n\n");
       Gestion();
       break;
   }
 }
-
 
 
 
@@ -179,8 +215,6 @@ FILE* FichiersClient(Client client){
 }
 
 
-
-
   // Mode Achat
 
   void Achat(){
@@ -214,7 +248,6 @@ FILE* FichiersClient(Client client){
         break;
     }
 }
-
 
 
 
@@ -275,9 +308,15 @@ int main(void) {
   
   //Permet de choisir entre mode gestion ou achat
   char mode[30];  
-  printf("Bonjour !\nChoisissez entre mode gestion ou mode achat: \n");
+  printf("\nBonjour !\n\nChoisissez entre mode gestion ou mode achat: \n\n");
   scanf("%s",mode);
+
   if(strcmp(mode, "gestion") == 0) {
+    printf("\n");
+    printf("##################################### \n");
+    printf("             MODE GESTION \n");
+    printf("##################################### \n");
+    printf("\n");
     Gestion();
   }
   else if(strcmp(mode, "achat") == 0) {
