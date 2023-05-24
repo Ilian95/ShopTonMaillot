@@ -53,7 +53,8 @@ void SearchStock(){
   f = fopen(nom, "r");
   if (f == NULL) {
     printf("\nLe produit que vous chercher n'existe pas.\n"); 
-  } 
+  }
+  
   else{
     fgets(stock, 30, f);
     fgets(stock, 30, f);
@@ -61,6 +62,7 @@ void SearchStock(){
     printf("\nStock du produit %s : %s",nomf ,stock);
     fclose(f);
   }
+  
 }
 
 
@@ -70,12 +72,12 @@ void IncreaseStock(int sum, int Space){
   char nomf[30];
   FILE* f = NULL;
   char stock[30];
-  int stock1, stock2, stockf;
   char numr[30];
-  int numrf;
   char prix[30];
-  int prixf;
   char taille[30];
+  int stock1, stock2, stockf;
+  int numrf;
+  int prixf;
   int taille2;
 
   printf("\n\nSaisissez le nom du produit dont vous voulez augmenter le stock:\n\n");
@@ -102,9 +104,12 @@ void IncreaseStock(int sum, int Space){
     numrf = atoi(numr);
     prixf = atoi(prix);
     
+    //Retire les espaces et tabulations de la taille créer par le fichier
     if((taille[strlen(taille) - 1] =='\n')||taille[strlen(taille) - 1] ==' '){
         taille[strlen(taille) - 1] = '\0';
     }
+    
+    //Verifie la taille du produit
     if(strcmp(taille, "petit") == 0){
       taille2 = 1;
     }
