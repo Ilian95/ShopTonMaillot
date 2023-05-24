@@ -90,6 +90,7 @@ void IncreaseStock(int sum, int Space){
   if (f == NULL) {
     printf("\nLe produit que vous avez entré n'existe pas.\n");  
   }
+  
   else{
     //Recupere les valeurs du produit
     fgets(stock, 30, f);
@@ -120,24 +121,29 @@ void IncreaseStock(int sum, int Space){
        taille2 = 4;
     }
     
+    //Demande l'augmentation ou la baisse du stock
     printf("\nSaisissez de combien vous voulez augmentez (ou réduire) le stock de %s (Stock : %d):\n\n",nomf, stock1);
     scanf("%d",&stock2);
     stockf = stock1 + stock2;
     
+    //Vérifie si il reste de la place dans la boutique
     if(((stockf*taille2)+sum) > 1000){
       printf("\nErreur !!! Vous avez mit une quantité du produit trop  élevée\n\n<Opération annulée>\n");
       printf("\nPlace restante dans le magasin: %d \n",Space-sum);
     }
+    
     else{
+      //Affiche le stock du produit
       printf("\nLe produit %s a maintenant un stock de : %d ;\n",nomf,stockf);
+      
       //Remet les valeurs du produit dans son fichier
-    f = fopen(nom, "w");
-    fprintf(f, "%s \n",nomf);
-    fprintf(f, "%d \n",numrf);
-    fprintf(f, "%d \n",stockf);
-    fprintf(f, "%d \n",prixf);
-    fprintf(f, "%s",taille);
-    fclose(f);
+      f = fopen(nom, "w");
+      fprintf(f, "%s \n",nomf);
+      fprintf(f, "%d \n",numrf);
+      fprintf(f, "%d \n",stockf);
+      fprintf(f, "%d \n",prixf);
+      fprintf(f, "%s",taille);
+      fclose(f);
     }
   }
 }
@@ -161,21 +167,28 @@ int DisplaySpace(){
   }
 
   while(fgets(str, 30, f) != NULL){
+    
+    //Retire les tabulation du fichier
     if(str[strlen(str) - 1] =='\n'){
         str[strlen(str) - 1] = '\0';
     }
+   
     strcat(str, ".txt");
+    
     f2 = fopen(str, "r");
     if (f2 == NULL){
       printf("Ouverture du fichier impossible\n");
     }
+    
     else{
+      //Récupère le stock et la taille
       fgets(stock, 30, f2);
       fgets(stock, 30, f2);
       fgets(stock, 30, f2);
       fgets(taille, 30, f2);
       fgets(taille, 30, f2);
       
+      //Retire les tabulation du fichier
       if(taille[strlen(taille) - 1] =='\n'){
         taille[strlen(taille) - 1] = '\0';
       }
@@ -189,12 +202,15 @@ int DisplaySpace(){
         taille2 = 4;
       }
       
+      //Récupère et ajoute le stock a la place occupée du produit
       stock2 = atoi(stock);
       sum += (stock2*taille2);
+      
       fclose(f2);
     }
   }
   fclose(f);
+  
   return sum;
 }
 
@@ -206,19 +222,26 @@ Produit CreateProduct(int sum, int Space) {
 
   printf("\nEntrer le nom du produit: \n\n");
   scanf("%s", p.nom);
+  
+  //Verifie la taille du nom
   while(strlen(p.nom) > 30 || strlen(p.nom) <= 0){
     printf("\nErreur sur la saisie du nom : ");
     printf("\nEntrer à nouveau le nom du produit: \n\n");
     scanf("%s", p.nom);
   }
+  
   //Choisi un num de ref aléatoire pour le produit
   p.num_ref = rand() % 1001 + 10000;
-  //Choisi une quantité aléatoire pour le produit
+  
+  //Demande une quantité pour le produit
   printf("\nSaisissez la quantité du produit ajouté: \n\n");
   scanf("%d", &p.qte);
+  
+  //Demande une quantité pour le produit
   printf("\nEntrer le prix du produit: \n\n");
   scanf("%d", &p.prix);
 
+  /Demande une quantité pour le produit
   printf("\nEntrer la taille du produit : (petit, moyen ou grand) \n\n");
   scanf("%s", p.taille);
   while((strcmp(p.taille, "petit") != 0)&&(strcmp(p.taille, "moyen") != 0)&&(strcmp(p.taille, "grand") != 0)){
@@ -227,9 +250,12 @@ Produit CreateProduct(int sum, int Space) {
   scanf("%s", p.taille);
   }
 
+  //Enlève les tabulations
   if(p.taille[strlen(p.taille) - 1] =='\n'){
         p.taille[strlen(p.taille) - 1] = '\0';
       }
+      
+      //Verifie la taille
       if(strcmp(p.taille, "petit") == 0){
         taille2 = 1;
       }
@@ -239,6 +265,8 @@ Produit CreateProduct(int sum, int Space) {
       else if(strcmp(p.taille, "grand") == 0){
         taille2 = 4;
       }
+  
+  //Verifie la place restante dans le magasin
   if(((p.qte*taille2)+sum) > 1000){
       printf("\nErreur !!! Vous avez mit une quantité du produit trop  élevée\n\n<Opération annulée>\n");
       printf("\nPlace restante dans le magasin: %d \n",Space-sum);
@@ -255,8 +283,8 @@ FILE* FileProduct(Produit p) {
   char nom[30];
 
   strcpy(nom,p.nom);
-  
   strcat(nom, ".txt");
+  
   fichier = fopen(nom, "w");
 
   // Verifie l'accessibilité du fichier
@@ -274,6 +302,7 @@ FILE* FileProduct(Produit p) {
   
   fclose(fichier);
 
+  //Ouvre le fichier produit.txt et met le nom du produit dedans
   FILE* fichier2 = fopen("produit.txt", "a");
   fprintf(fichier, "\n%s", p.nom);
   fclose(fichier2);
@@ -288,11 +317,13 @@ void Gestion(){
   int choix;
   int sum = DisplaySpace();
   
+  //Affiche le haut de l'acceuil
   printf("            ACCEUIL                \n\n");
   printf("Place restante dans le magasin : %d\n\n", Space-sum);
   printf("Appuyer sur 1 pour la liste des produits; \n \nAppuyer sur 2 pour chercher le stock d'un produit; \n \nAppuyer sur 3 pour augmenter le stock d'un produit; \n \nAppuyer sur 4 pour afficher la place disponible dans   le magasin; \n \nAppuyer sur 5 pour ajouter un produit; \n \nAppuyer sur 6 pour quitter;\n \n");
   scanf("%d", &choix);
 
+  //Effectue la suite du programme en fonction du choix de l'utilisateur
   switch(choix){
     case 1:
       ListP();
@@ -300,12 +331,14 @@ void Gestion(){
       printf("##################################### \n\n");
       Gestion();
       break;
+      
     case 2:
       SearchStock();
       printf("\nRetour à l'acceuil...\n\n");
       printf("##################################### \n\n");
       Gestion();
       break;
+      
     case 3:
       IncreaseStock(sum, Space);
       sum = DisplaySpace();
@@ -314,12 +347,14 @@ void Gestion(){
       printf("##################################### \n\n");
       Gestion();
       break;
+      
     case 4:
       printf("\nLe magasin a un stock Occupé de %d / %d Libre. \n",sum, Space);
       printf("\nRetour à l'acceuil...\n\n");
       printf("##################################### \n\n");
       Gestion();
       break;
+      
     case 5:
       p = CreateProduct(sum, Space);
       printf("\n<Produit créé>\n");
@@ -329,9 +364,11 @@ void Gestion(){
       printf("##################################### \n\n");
       Gestion();
       break;
+      
     case 6:
       printf("\nPassez une bonne journée, au revoir ! \n");
       break;
+      
     default:
       printf("\nErreur de saisie... \n");
       printf("\nRetour à l'acceuil...\n\n");
