@@ -294,8 +294,10 @@ void IncreaseStock(int sum, int Space){
     }
     
     //Demande l'augmentation ou la baisse du stock
-    printf("\nSaisissez de combien vous voulez augmentez (ou réduire) le stock de %s (Stock : %d):\n\n",nomf, stock1);
-    scanf("%d",&stock2);
+    do{
+      printf("\nSaisissez de combien vous voulez augmentez le stock de %s (Stock : %d):\n\n",nomf, stock1);
+      scanf("%d",&stock2);
+    }while(stock2<=0); 
     stockf = stock1 + stock2;
     
     //Vérifie s'il reste de la place dans la boutique
@@ -324,9 +326,14 @@ void IncreaseStock(int sum, int Space){
 // Fonction créant un produit
 Product CreateProduct(int sum, int Space) {
   Product p;
+  FILE* f = NULL;
+  char str[30];
+  FILE* f2 = NULL;
+  char num_r[30];
+  int num_rf;
   int taille2;
 
-  printf("\nEntrer le nom du produit: \n\n");
+  printf("\nEntrer le nom du produit: (moins de 30 caractère et sans espace)\n\n");
   scanf("%s", p.nom);
   
   //Verifie la taille du nom
@@ -338,16 +345,51 @@ Product CreateProduct(int sum, int Space) {
   
   //Choisi un num de ref aléatoire pour le produit
   p.num_ref = rand() % 1001 + 10000;
+
+  //Verifie l'accessibilité au fichier produit.txt
+  f = fopen("produit.txt", "r");
+  if (f == NULL){
+    printf("Ouverture du fichier impossible\n");
+    exit(1);
+  }
+
+  //Parcours le fichier produit.txt
+  while(fgets(str, 30, f) != NULL){
+    //Retire les tabulation du fichier
+    if(str[strlen(str) - 1] =='\n'){
+        str[strlen(str) - 1] = '\0';
+    }
+    strcat(str, ".txt");
+    
+    //Verifie l'accessibilité au fichier
+    f2 = fopen(str, "r");
+    if (f2 == NULL){
+      printf("Ouverture du fichier impossible\n");
+    }
+      
+    else{
+      //Récupère le num de reference
+      fgets(num_r, 30, f2);
+      fgets(num_r, 30, f2);
+      num_rf = atoi(num_r);
+      //Vérifie que le num de reference est unique
+      while(p.num_ref == num_rf){
+        p.num_ref = rand() % 1001 + 10000;
+      }
+    }
+    fclose(f2);
+  }
+  fclose(f);
   
   //Demande une quantité pour le produit
   printf("\nSaisissez la quantité du produit ajouté: \n\n");
   scanf("%d", &p.qte);
   
-  //Demande une quantité pour le produit
+  //Demande un prix pour le produit
   printf("\nEntrer le prix du produit: \n\n");
   scanf("%d", &p.prix);
 
-  //Demande une quantité pour le produit
+  //Demande et verifie la taille du produit
   printf("\nEntrer la taille du produit : (petit, moyen ou grand) \n\n");
   scanf("%s", p.taille);
   while((strcmp(p.taille, "petit") != 0)&&(strcmp(p.taille, "moyen") != 0)&&(strcmp(p.taille, "grand") != 0)){
@@ -415,6 +457,7 @@ FILE* FileProduct(Product p) {
   return fichier;
 }
 
+
 //Lance le mode gestion
 void Management(){
   Product p;
@@ -447,7 +490,6 @@ void Management(){
     case 3:
       IncreaseStock(sum, Space);
       sum = DisplaySpace();
-      printf("\nLe magasin a un stock Occupé de %d / %d Libre. \n",sum, Space);
       printf("\nRetour à l'acceuil...\n \n");
       printf("################################ \n\n");
       Management();
@@ -488,14 +530,11 @@ int main(void) {
 
   //Effectue la suite du programme en fonction du choix de l'utilisateur
   if(strcmp(mode, "gestion") == 0) {
-    printf("\n");
-    printf("################################ \n");
+    printf("\n################################ \n");
     printf("          MODE GESTION \n");
-    printf("################################ \n");
+    printf("################################ \n\n");
     DisplayStock();
-    printf("\n");
-    printf("################################ \n");
-    printf("\n");
+    printf("\n################################ \n\n");
     Management();
   }
   else if(strcmp(mode, "achat") == 0) {
