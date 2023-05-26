@@ -519,6 +519,298 @@ void Management(){
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+//                              ABBES
+//                              ABBES
+//                              ABBES
+
+
+
+
+
+
+
+// Structure Client
+typedef struct{
+  char nom[50];
+  char prenom[50];
+  char nom_utilisateur[50];
+  char mdp[50];
+  char* historique_achat;
+}Client;
+
+
+// Fonction qui crée un client 
+Client create_customer(){
+  Client client;
+  client.historique_achat=NULL;
+  printf("Entrer le nom du client : ");
+  scanf("%s",client.nom);
+  printf("Entrer le prénom du client : ");
+  scanf("%s",client.prenom);
+  printf("Entrer un nom d'utilisateur : ");
+  scanf("%s",client.nom_utilisateur);
+  printf("Entrer un mot de passe : ");
+  scanf("%s",client.mdp);
+  return client;
+}
+
+// Permet de stocker un client dans fichier
+FILE* FichiersClient(Client client){
+  FILE* fichier;
+  fichier = fopen(client.nom_utilisateur, "w");
+
+  // Verifie l'accessibilité du fichier
+  if (fichier == NULL) {
+    printf("Ouverture du fichier impossible\n");
+    exit(1);
+  }
+
+  // Ecrit les données du client dans un fichier
+  fprintf(fichier, "Nom : %s\n", client.nom);
+  fprintf(fichier, "Prénom : %s\n", client.prenom);
+  fprintf(fichier, "Nom d'utilisateur : %s\n", client.nom_utilisateur);
+  fprintf(fichier, "%s\n", client.mdp);
+  fprintf(fichier, "%s\n",client.historique_achat);
+
+  return fichier;
+}
+
+//Mode Connexion
+int login(){
+  FILE* f = NULL;
+  Client client;
+  int comp;
+  char nom_utilis[50];
+  char mdp[50];
+  char mdp2[50];
+  printf("Entrer votre nom d'utilisateur : ");
+  scanf("%s",nom_utilis);
+  printf("Entrer votre mot de passe : ");
+  scanf("%s",mdp);
+  f = fopen(nom_utilis,"r");
+  if (f == NULL) {
+    printf("Nom d'utilisateur incorrect\n");
+    login();
+  }else{
+    fgets(mdp2,50,f);
+    fgets(mdp2,50,f);
+    fgets(mdp2,50,f);
+    fgets(mdp2,50,f);
+    if(mdp2[strlen(mdp2)-1]=='\n'){
+      mdp2[strlen(mdp2)-1]='\0';
+    }
+    if(strcmp(mdp,mdp2) == 0){
+      printf("\nVous êtes connectés\n");
+      return 0;
+    }
+    else{
+      printf("Mot de passe incorrect\n");
+      login();
+    }
+  }
+  fclose(f);
+}
+
+
+//Fonction permettant de chercher un produit
+void Search_and_buy_Produit(){
+  char nom[50];
+  char nomf[50];
+  FILE* f = NULL;
+  char product[50];
+  char stock[30];
+  char numr[30];
+  char prix[30];
+  char taille[30];
+  int stock1, stock2, stockf;
+  int numrf;
+  int prixf;
+  int taille2;
+  int prixt = 0;
+  
+  printf("\nSaisissez le nom du produit que vous recherchez:\n");
+  scanf("%s",nom);
+
+  strcpy(nomf, nom);
+  strcat(nom, ".txt");
+
+  f = fopen(nom, "r");
+  if (f == NULL) {
+    printf("Le produit que vous chercher n'existe pas.\n");  
+  }
+  else{
+    //Recupere les valeurs du produit
+    fgets(stock, 30, f);
+    fgets(numr, 30, f);
+    fgets(stock, 30, f);
+    fgets(prix, 30, f);
+    fgets(taille, 30, f);
+    fclose(f);
+
+    //Remet en entier certaines valeures
+    stock1 = atoi(stock);
+    numrf = atoi(numr);
+    prixf = atoi(prix);
+
+    //Retire les espaces et tabulations de la taille créer par le fichier
+    if((taille[strlen(taille) - 1] =='\n')||taille[strlen(taille) - 1] ==' '){
+        taille[strlen(taille) - 1] = '\0';
+    }
+    
+    //Verifie la taille du produit
+    if(strcmp(taille, "petit") == 0){
+      taille2 = 1;
+    }
+    else if(strcmp(taille, "moyen") == 0){
+      taille2 = 2;
+    }
+    else if(strcmp(taille, "grand") == 0){
+       taille2 = 4;
+    }
+
+    //Demande la quantité voulue par l'utilisateur
+    printf("\nSaisissez la quantité pour ce maillot : %s (Stock : %d): \nPrix:%d\n\n",nomf, stock1,prixf);
+    scanf("%d",&stock2);
+    
+    if(stock1<stock2){
+      printf("Vous avez saisi une quantité trop élevé");
+      stockf = stock1;
+    }
+    else{
+      stockf = stock1 - stock2;
+      //Affiche le stock du produit
+      printf("\nLe produit %s a maintenant un stock de : %d ;\n",nomf,stockf);
+      prixt += prixf * stock2;
+      printf("\nLe Prix total de l'achat est : %d \n",prixt);
+    }  
+      
+    //Remet les valeurs du produit dans son fichier
+    f = fopen(nom, "w");
+    fprintf(f, "%s \n",nomf);
+    fprintf(f, "%d \n",numrf);
+    fprintf(f, "%d \n",stockf);
+    fprintf(f, "%d \n",prixf);
+    fprintf(f, "%s",taille);
+    fclose(f);
+  }
+}
+
+// Fonction supprime un client
+void delete_customer(){
+  char file[30];
+
+  printf("\nVous allez supprimé votre compte\n");
+  printf("\nEntrez votre nom d'utilisateur : ");
+  scanf("%s",file);
+    
+  if (remove(file) == 0){
+    printf("\nVotre compte a été supprimé avec succès.\n");
+  }    
+  else
+  {    
+    printf("Impossible de supprimer le fichier client\n");
+    perror("Erreur");    
+  }
+}
+
+
+
+// Fonction demande au client un choix après s'etre connecté
+void home(){
+  int choix,choixA,prixtot;
+  printf("\n###########################################\n");
+  printf("\n            ACCEUIL                \n\n");
+
+  printf("Appuyer sur:\n\n 1 - Recherche/Achat d'un maillot\n\n 2 - Supprimer votre compte\n\n 3 - Deconnexion\n\n");
+  scanf("%d",&choix);
+    
+  switch(choix){
+    case 1:
+      Search_and_buy_Produit();
+      printf("Voulez vous achetez un autre article: (1 pour oui)(2 pour non):\n");
+      scanf("%d",&choixA);
+      if(choixA==1){
+        Search_and_buy_Produit();
+        home();
+      }
+      else if(choixA==2){
+        home();
+      }
+      else{
+        printf("Erreur de saisie...");
+        exit(1);
+      }
+      break;
+    
+    case 2:
+      delete_customer();
+      break;
+    
+    case 3:
+      printf("\nVous êtes déconnecté\n");
+      break;
+    default :
+      printf("Erreur de saisie...");
+      home();
+      break;
+    }
+  }
+  
+
+// Mode Achat
+void Buy(){
+  int choix1;
+
+  printf("     CONNEXION/INSCRIPTION     \n\n");
+
+  printf("Appuyer sur:\n\n 1 - Connexion \n\n 2 - Inscription \n\n 3 - Quitter\n\n");
+  scanf("%d",&choix1);
+    
+
+  switch(choix1){
+    case 1 :
+      if(login()==0){
+        home();
+      }
+      break;
+      
+    case 2 :
+      printf("\nVous allez créer votre compte\n\n");
+      Client client=create_customer();
+      FILE*fichierclient=FichiersClient(client);
+      printf("\nVotre compte est créer vous devez vous connecter pour y accéder\n\n");
+      break;
+
+    case 3:
+      printf("\nPassez une bonne journée, au revoir ! \n");
+      break;
+    
+    default :
+      printf("Erreur de saisie...");
+      Buy();
+      break;
+  }
+}
+
+
+
+
+
+
+
 int main(void) {
   srand(time(NULL));
 
@@ -543,6 +835,7 @@ int main(void) {
     printf("             MODE ACHAT \n");
     printf("################################ \n");
     printf("\n");
+    Buy();
   }
   else{
     printf("Erreur de saisie... \n");
