@@ -27,28 +27,30 @@ void DisplayStock(){
   int nbp_b = 0;
   int a,b,c;
   char nom_i[30];
-
+ 
+  //Tableau pour les produits nuls et pour les produits avec un stock bas
   Product* produit_n = malloc(sizeof(Product));
   Product* produit_b = malloc(sizeof(Product));
 
   printf("        BESOIN DE RESTOCKAGE            \n\n");
   
+  //Verifie l'accessibilité au fichier produit.txt
   f = fopen("produit.txt", "r");
   if (f == NULL){
     printf("Ouverture du fichier impossible\n");
     exit(1);
   }
 
+  //Parcours le fichier produit.txt
   while(fgets(str, 30, f) != NULL){
-    
     //Retire les tabulation du fichier
     if(str[strlen(str) - 1] =='\n'){
         str[strlen(str) - 1] = '\0';
     }
-   
     strcat(str, ".txt");
-    f2 = fopen(str, "r");
     
+    //Verifie l'accessibilité au fichier
+    f2 = fopen(str, "r");
     if (f2 == NULL){
       printf("Ouverture du fichier impossible\n");
     }
@@ -65,8 +67,9 @@ void DisplayStock(){
       //Récupère le stock
       fgets(stock, 30, f2);
       fgets(stock, 30, f2);
-
       stockp = atoi(stock);
+      
+      //Enregistre le produit et son stock dans un tableau selon son stock restant
       if(stockp == 0){
         nbp_n ++;
         produit_n = realloc(produit_n, nbp_n * sizeof(Product));
@@ -81,6 +84,8 @@ void DisplayStock(){
       }
     } 
   }
+  
+  //Affiche les produits nuls
   printf("Produits ayant un stock nul : \n\n");
   for(int i = 0; i<nbp_n;i++){
     printf(" - %s: %d\n",produit_n[i].nom,produit_n[i].qte);
@@ -103,6 +108,7 @@ void DisplayStock(){
     }
   }
   
+  //Affiche les besoins de restockage
   printf("Voici les 5 produits ayant le stock le + bas : \n\n");
   for(int j = 0; j<5;j++){
     printf(" - %s: %d\n",produit_b[j].nom,produit_b[j].qte);
@@ -121,23 +127,22 @@ int DisplaySpace(){
   int taille2 = 0;
   int sum = 0;
 
-  f = fopen("produit.txt", "r");
-
   //Verifie l'accessibilité au fichier
+  f = fopen("produit.txt", "r");
   if (f == NULL){
     printf("Ouverture du fichier impossible\n");
     exit(1);
   }
 
+  //Parcours le fichier produit.txt
   while(fgets(str, 30, f) != NULL){
-    
     //Retire les tabulation du fichier
     if(str[strlen(str) - 1] =='\n'){
         str[strlen(str) - 1] = '\0';
     }
-   
     strcat(str, ".txt");
     
+    //Verifie l'accessibilité du fichier
     f2 = fopen(str, "r");
     if (f2 == NULL){
       printf("Ouverture du fichier impossible\n");
@@ -155,6 +160,8 @@ int DisplaySpace(){
       if(taille[strlen(taille) - 1] =='\n'){
         taille[strlen(taille) - 1] = '\0';
       }
+      
+      //Récupère la taille
       if(strcmp(taille, "petit") == 0){
         taille2 = 1;
       }
@@ -165,7 +172,7 @@ int DisplaySpace(){
         taille2 = 4;
       }
       
-      //Récupère et ajoute le stock a la place occupée du produit
+      //Récupère et ajoute le stock du produit a la place occupée du magasin
       stock2 = atoi(stock);
       sum += (stock2*taille2);
       
@@ -183,6 +190,7 @@ void ListP(){
   FILE* f;
   char str[30];
   
+  //Verifie l'accessibilité du fichier produit.txt
   f = fopen("produit.txt", "r");
   if (f == NULL){
     printf("Ouverture du fichier impossible\n");
@@ -191,6 +199,7 @@ void ListP(){
 
   printf("\nVoici la liste des produits :\n\n");
   
+  //Parcours le fichier produit.txt et affiche son contenu
   while(fgets(str, 30, f) != NULL){ 
     printf("- %s", str);
   }
@@ -213,12 +222,14 @@ void SearchStock(){
   strcpy(nomf, nom);
   strcat(nom, ".txt");
 
+  //Verifie l'accessibilité du fichier
   f = fopen(nom, "r");
   if (f == NULL) {
     printf("\nLe produit que vous chercher n'existe pas.\n"); 
   }
   
   else{
+    //Récupère le stock
     fgets(stock, 30, f);
     fgets(stock, 30, f);
     fgets(stock, 30, f);
@@ -249,6 +260,7 @@ void IncreaseStock(int sum, int Space){
   strcpy(nomf, nom);
   strcat(nom, ".txt");
 
+  //Vérifie l'accessibilité du fichier
   f = fopen(nom, "r");
   if (f == NULL) {
     printf("\nLe produit que vous avez entré n'existe pas.\n");  
@@ -273,7 +285,7 @@ void IncreaseStock(int sum, int Space){
         taille[strlen(taille) - 1] = '\0';
     }
     
-    //Verifie la taille du produit
+    //Récupère la taille du produit
     if(strcmp(taille, "petit") == 0){
       taille2 = 1;
     }
@@ -289,7 +301,7 @@ void IncreaseStock(int sum, int Space){
     scanf("%d",&stock2);
     stockf = stock1 + stock2;
     
-    //Vérifie si il reste de la place dans la boutique
+    //Vérifie s'il reste de la place dans la boutique
     if(((stockf*taille2)+sum) > 1000){
       printf("\nErreur !!! Vous avez mit une quantité du produit trop  élevée\n\n<Opération annulée>\n");
       printf("\nPlace restante dans le magasin: %d \n",Space-sum);
@@ -352,7 +364,7 @@ Product CreateProduct(int sum, int Space) {
         p.taille[strlen(p.taille) - 1] = '\0';
       }
       
-      //Verifie la taille
+      //Récupère la taille
       if(strcmp(p.taille, "petit") == 0){
         taille2 = 1;
       }
@@ -381,10 +393,9 @@ FILE* FileProduct(Product p) {
 
   strcpy(nom,p.nom);
   strcat(nom, ".txt");
-  
-  fichier = fopen(nom, "w");
 
   // Verifie l'accessibilité du fichier
+  fichier = fopen(nom, "w");
   if (fichier == NULL) {
     printf("Ouverture du fichier impossible\n");
     exit(1);
@@ -399,7 +410,7 @@ FILE* FileProduct(Product p) {
   
   fclose(fichier);
 
-  //Ouvre le fichier produit.txt et met le nom du produit dedans
+  //Ouvre le fichier produit.txt et ajoute le nom du produit dedans
   FILE* fichier2 = fopen("produit.txt", "a");
   fprintf(fichier, "\n%s", p.nom);
   fclose(fichier2);
@@ -478,6 +489,7 @@ int main(void) {
   scanf("%s",mode);
   printf("\n");
 
+  //Effectue la suite du programme en fonction du choix de l'utilisateur
   if(strcmp(mode, "gestion") == 0) {
     printf("\n");
     printf("################################ \n");
