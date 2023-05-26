@@ -179,8 +179,7 @@ int DisplaySpace(){
       fclose(f2);
     }
   }
-  fclose(f);
-  
+  fclose(f); 
   return sum;
 }
 
@@ -204,7 +203,6 @@ void ListP(){
     printf("- %s", str);
   }
   printf("\n");
-
   fclose(f);
 }
 
@@ -236,7 +234,6 @@ void SearchStock(){
     printf("\nStock du produit %s : %s",nomf ,stock);
     fclose(f);
   }
-  
 }
 
 
@@ -361,26 +358,26 @@ Product CreateProduct(int sum, int Space) {
 
   //Enlève les tabulations
   if(p.taille[strlen(p.taille) - 1] =='\n'){
-        p.taille[strlen(p.taille) - 1] = '\0';
-      }
+    p.taille[strlen(p.taille) - 1] = '\0';
+  }
       
-      //Récupère la taille
-      if(strcmp(p.taille, "petit") == 0){
-        taille2 = 1;
-      }
-      else if(strcmp(p.taille, "moyen") == 0){
-        taille2 = 2;
-      }
-      else if(strcmp(p.taille, "grand") == 0){
-        taille2 = 4;
-      }
+  //Récupère la taille
+  if(strcmp(p.taille, "petit") == 0){
+    taille2 = 1;
+  }
+  else if(strcmp(p.taille, "moyen") == 0){
+    taille2 = 2;
+  }
+  else if(strcmp(p.taille, "grand") == 0){
+    taille2 = 4;
+  }
   
   //Verifie la place restante dans le magasin
   if(((p.qte*taille2)+sum) > 1000){
       printf("\nErreur !!! Vous avez mit une quantité du produit trop  élevée\n\n<Opération annulée>\n");
       printf("\nPlace restante dans le magasin: %d \n",Space-sum);
     exit(1);
-    }
+  }
 
   return p;
 }
