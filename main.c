@@ -384,10 +384,28 @@ Product CreateProduct(int sum, int Space) {
   //Demande une quantité pour le produit
   printf("\nSaisissez la quantité du produit ajouté: \n\n");
   scanf("%d", &p.qte);
+
+  //Verifie l'entree utilisateur
+  if(scanf("%d",&p.qte) != 1){
+    printf("Choix invalide. Entrez un entier.\n\n");
+
+    //Vide le flux d'entrée
+    int e;
+    while((e = getchar()) != '\n' && e != EOF){}
+  }
   
   //Demande un prix pour le produit
   printf("\nEntrer le prix du produit: \n\n");
   scanf("%d", &p.prix);
+
+  //Verifie l'entree utilisateur
+  if(scanf("%d",&p.prix) != 1){
+    printf("Choix invalide. Entrez un entier.\n\n");
+
+    //Vide le flux d'entrée
+    int e;
+    while((e = getchar()) != '\n' && e != EOF){}
+  }
 
   //Demande et verifie la taille du produit
   printf("\nEntrer la taille du produit : (petit, moyen ou grand) \n\n");
@@ -469,7 +487,15 @@ void Management(){
   printf("            ACCEUIL                \n\n");
   printf("\n< Place restante dans le magasin : %d >\n\n", Space-sum);
   printf("- Appuyer sur 1 pour la liste des produits; \n \n- Appuyer sur 2 pour chercher le stock d'un produit; \n \n- Appuyer sur 3 pour augmenter le stock d'un produit; \n \n- Appuyer sur 4 pour ajouter un produit; \n \n- Appuyer sur 5 pour quitter;\n \n");
-  scanf("%d", &choix);
+
+  //Verifie l'entree utilisateur
+  if(scanf("%d",&choix) != 1){
+    printf("Choix invalide. Entrez un entier.\n");
+
+    //Vide le flux d'entrée
+    int e;
+    while((e = getchar()) != '\n' && e != EOF){}
+  }
 
   //Effectue la suite du programme en fonction du choix de l'utilisateur
   switch(choix){
@@ -519,26 +545,9 @@ void Management(){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //                              ABBES
 //                              ABBES
 //                              ABBES
-
-
-
-
 
 
 
@@ -548,31 +557,160 @@ typedef struct{
   char prenom[50];
   char nom_utilisateur[50];
   char mdp[50];
-  char* historique_achat;
-}Client;
+}Customer;
+
+
+// Affiche l'historique d'achat
+void Purchases(char nom[50], int nb_a){
+  FILE* f = NULL;
+  char achat1[50];
+  char achat2[50];
+  char achat3[50];
+  int nbl = 0;
+
+  //Effectue le programme en fonction du nombre d'achats
+  switch(nb_a){
+    case 1:
+      //Verifie l'accessibilité au fichier
+      f = fopen(nom, "r");
+      if (f == NULL) {
+        printf("Ouverture du fichier impossimble.\n");  
+      }
+      else{
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        
+        //Retire les espaces et tabulations créer par le fichier
+        if((achat1[strlen(achat1) - 1] =='\n')||achat1[strlen(achat1) - 1] ==' '){
+        achat1[strlen(achat1) - 1] = '\0';
+        }
+
+        //Verifie si le client a au moins 1 achat
+        if(strcmp(achat1,"Pasdachat")==0){
+          printf("Vous n'avez pas d'achats récents\n\n");
+        }
+        else{
+          printf("\nVoici le dernier produit acheté:\n\n %s \n\n", achat1);
+        }
+      }
+    break;
+
+    case 2:
+      //Verifie l'accessibilité au fichier
+      f = fopen(nom, "r");
+      if (f == NULL) {
+        printf("Ouverture du fichier impossible.\n");  
+      }
+      else{
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat2, 50, f);
+        printf("\nVoici les deux derniers produit acheté:\n\n - %s - %s\n\n", achat1, achat2);
+      }
+    break;
+
+    case 3:
+      //Verifie l'accessbilité au fichier
+      f = fopen(nom, "r");
+      if (f == NULL) {
+        printf("Ouverture du fichier impossimble.\n");  
+      }
+      else{
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat1, 50, f);
+        fgets(achat2, 50, f);
+        fgets(achat3, 50, f);
+        printf("\nVoici les derniers produits acheté:\n\n - %s - %s - %s \n\n", achat1, achat2, achat3);
+      }
+    break;
+
+    default:
+      //Vérifie l'accessibilité au fichier
+      f = fopen(nom, "r");
+      if (f == NULL) {
+        printf("Ouverture du fichier impossimble.\n");  
+      }
+
+      //Recupère les 3 derniers achats
+      while(fgets(achat1, 50, f) != NULL){
+        nbl++;
+      }
+      rewind(f);
+      for(int i = 0; i < nbl-3;i++){
+        fgets(achat1, 50, f);
+      }
+      fgets(achat1, 50, f);
+      fgets(achat2, 50, f);
+      fgets(achat3, 50, f);
+      printf("\nVoici les derniers produits acheté:\n\n - %s - %s - %s \n\n", achat1, achat2, achat3);
+    break;
+  }
+}
 
 
 // Fonction qui crée un client 
-Client create_customer(){
-  Client client;
-  client.historique_achat=NULL;
+Customer create_customer(){
+  Customer client;
+  
   printf("Entrer le nom du client : ");
   scanf("%s",client.nom);
+
+  //Verifie la taille du nom
+  while(strlen(client.nom) > 50 || strlen(client.nom) <= 0){
+    printf("\nErreur sur la saisie du nom : ");
+    printf("\nEntrer à nouveau le nom du produit: \n\n");
+    scanf("%s", client.nom);
+  }
+  
   printf("Entrer le prénom du client : ");
   scanf("%s",client.prenom);
+
+  //Verifie la taille du prénom
+  while(strlen(client.prenom) > 50 || strlen(client.prenom) <= 0){
+    printf("\nErreur sur la saisie du nom : ");
+    printf("\nEntrer à nouveau le nom du produit: \n\n");
+    scanf("%s", client.prenom);
+  }
+  
   printf("Entrer un nom d'utilisateur : ");
   scanf("%s",client.nom_utilisateur);
+
+  //Verifie la taille du nom d'utilisateur
+  while(strlen(client.nom_utilisateur) > 50 || strlen(client.nom_utilisateur) <= 0){
+    printf("\nErreur sur la saisie du nom : ");
+    printf("\nEntrer à nouveau le nom du produit: \n\n");
+    scanf("%s", client.nom_utilisateur);
+  }
+  
   printf("Entrer un mot de passe : ");
   scanf("%s",client.mdp);
+
+  //Verifie la taille du mot de passe
+  while(strlen(client.mdp) > 50 || strlen(client.mdp) <= 0){
+    printf("\nErreur sur la saisie du nom : ");
+    printf("\nEntrer à nouveau le nom du produit: \n\n");
+    scanf("%s", client.mdp);
+  }
+  
   return client;
 }
 
+
 // Permet de stocker un client dans fichier
-FILE* FichiersClient(Client client){
+FILE* FilesCustomers(Customer client){
   FILE* fichier;
-  fichier = fopen(client.nom_utilisateur, "w");
 
   // Verifie l'accessibilité du fichier
+  fichier = fopen(client.nom_utilisateur, "w");
   if (fichier == NULL) {
     printf("Ouverture du fichier impossible\n");
     exit(1);
@@ -583,50 +721,60 @@ FILE* FichiersClient(Client client){
   fprintf(fichier, "Prénom : %s\n", client.prenom);
   fprintf(fichier, "Nom d'utilisateur : %s\n", client.nom_utilisateur);
   fprintf(fichier, "%s\n", client.mdp);
-  fprintf(fichier, "%s\n",client.historique_achat);
+  fprintf(fichier, "Pasdachat\n");
 
   return fichier;
 }
 
+
 //Mode Connexion
-int login(){
+char* login(){
   FILE* f = NULL;
-  Client client;
+  Customer client;
   int comp;
   char nom_utilis[50];
   char mdp[50];
   char mdp2[50];
-  printf("Entrer votre nom d'utilisateur : ");
+  
+  printf("\nEntrer votre nom d'utilisateur : ");
   scanf("%s",nom_utilis);
+  
   printf("Entrer votre mot de passe : ");
   scanf("%s",mdp);
+
+  //Verifie si le client existe
   f = fopen(nom_utilis,"r");
   if (f == NULL) {
-    printf("Nom d'utilisateur incorrect\n");
+    printf("\n< Nom d'utilisateur incorrect >\n\n");
     login();
-  }else{
+  }
+  else{
     fgets(mdp2,50,f);
     fgets(mdp2,50,f);
     fgets(mdp2,50,f);
     fgets(mdp2,50,f);
+    
     if(mdp2[strlen(mdp2)-1]=='\n'){
       mdp2[strlen(mdp2)-1]='\0';
     }
+    
     if(strcmp(mdp,mdp2) == 0){
-      printf("\nVous êtes connectés\n");
-      return 0;
+      printf("\n< Vous êtes connectés >\n\n");
     }
+      
     else{
-      printf("Mot de passe incorrect\n");
+      printf("< Mot de passe incorrect >\n");
       login();
     }
   }
   fclose(f);
+
+  return nom_utilis;
 }
 
 
-//Fonction permettant de chercher un produit
-void Search_and_buy_Produit(){
+//Fonction permettant de chercher et d'acheter un produit
+void Search_and_buy_Produit(int prixtot, char nomU[50], int nb_a){
   char nom[50];
   char nomf[50];
   FILE* f = NULL;
@@ -639,7 +787,12 @@ void Search_and_buy_Produit(){
   int numrf;
   int prixf;
   int taille2;
-  int prixt = 0;
+  int choix;
+  FILE* f2 = NULL;
+  char nom2[50];
+  char prenom[50];
+  char mdp[50];
+  char achat[50];
   
   printf("\nSaisissez le nom du produit que vous recherchez:\n");
   scanf("%s",nom);
@@ -647,10 +800,12 @@ void Search_and_buy_Produit(){
   strcpy(nomf, nom);
   strcat(nom, ".txt");
 
+  //Verifie l'accessibilité au fichier
   f = fopen(nom, "r");
   if (f == NULL) {
     printf("Le produit que vous chercher n'existe pas.\n");  
   }
+    
   else{
     //Recupere les valeurs du produit
     fgets(stock, 30, f);
@@ -682,9 +837,11 @@ void Search_and_buy_Produit(){
     }
 
     //Demande la quantité voulue par l'utilisateur
-    printf("\nSaisissez la quantité pour ce maillot : %s (Stock : %d): \nPrix:%d\n\n",nomf, stock1,prixf);
+    printf("\nSaisissez la quantité pour ce maillot : %s \n- Stock : %d \n- Prix : %d\n\n",nomf, stock1,prixf);
     scanf("%d",&stock2);
-    
+    nb_a ++;
+
+    //Verifie que le client entre une quantité valide
     if(stock1<stock2){
       printf("Vous avez saisi une quantité trop élevé");
       stockf = stock1;
@@ -693,8 +850,49 @@ void Search_and_buy_Produit(){
       stockf = stock1 - stock2;
       //Affiche le stock du produit
       printf("\nLe produit %s a maintenant un stock de : %d ;\n",nomf,stockf);
-      prixt += prixf * stock2;
-      printf("\nLe Prix total de l'achat est : %d \n",prixt);
+
+      //Verifie l'accessibilité au fichier
+      f2 = fopen(nomU, "r");
+      if (f == NULL) {
+        printf("Ouverture du fichier impossible.\n");  
+      }
+      else{
+        fgets(nom2, 50, f2);
+        fgets(prenom, 50, f2);
+        fgets(achat, 50, f2);
+        fgets(mdp, 50, f2);
+        fgets(achat, 50, f2);
+        fclose(f2);
+
+        //Retire les espaces et tabulations créer par le fichier
+        if((achat[strlen(achat) - 1] =='\n')||achat[strlen(achat) - 1] ==' '){
+          achat[strlen(achat) - 1] = '\0';
+        }
+
+        if(strcmp(achat, "Pasdachat") == 0){
+          //Verifie accessibilité au fichier
+          f2 = fopen(nomU, "w");
+          if (f == NULL) {
+            printf("Ouverture du fichier impossible.\n");  
+          }
+          else{
+            fprintf(f2, "%s", nom2);
+            fprintf(f2, "%s", prenom);
+            fprintf(f2, "%s\n", nomU);
+            fprintf(f2, "%s", mdp);
+            fclose(f2);
+          }
+        }
+        //Verifie accessibilité au fichier
+        f2 = fopen(nomU, "a");
+        if (f2 == NULL) {
+        printf("Ouverture du fichier impossible.\n");  
+        }
+        else{
+          fprintf(f2, "%s\n", nomf);
+        }
+        fclose(f2);
+      }
     }  
       
     //Remet les valeurs du produit dans son fichier
@@ -705,66 +903,100 @@ void Search_and_buy_Produit(){
     fprintf(f, "%d \n",prixf);
     fprintf(f, "%s",taille);
     fclose(f);
+
+    //Met a jour le prix total
+    prixtot += prixf * stock2;
+    
+    printf("\nVoulez vous achetez un autre article: (1 pour oui)(2 pour non):\n");
+    scanf("%d",&choix);
+    
+    if(choix==1){
+      Search_and_buy_Produit(prixtot, nomU, nb_a);
+    }
+    else if(choix==2){
+      printf("\nLe Prix total de l'achat est : %d \n\n",prixtot);
+      printf("Retour à l'acceuil...\n\n");
+    }
+    else{
+      printf("Erreur de saisie...");
+      exit(1);
+    }
   }
 }
 
-// Fonction supprime un client
+// Fonction qui permet supprimer un client
 void delete_customer(){
   char file[30];
 
-  printf("\nVous allez supprimé votre compte\n");
+  printf("\nVous allez supprimer votre compte\n");
   printf("\nEntrez votre nom d'utilisateur : ");
   scanf("%s",file);
     
   if (remove(file) == 0){
     printf("\nVotre compte a été supprimé avec succès.\n");
   }    
-  else
-  {    
+  else{    
     printf("Impossible de supprimer le fichier client\n");
     perror("Erreur");    
   }
 }
 
 
+//Fonction affiche l'acceuil
+void home(char nom[50]){
+  int choix,choixA,prixtot = 0;
+  int nb_a = 0;
+  FILE* f = NULL;
+  char str[50];
 
-// Fonction demande au client un choix après s'etre connecté
-void home(){
-  int choix,choixA,prixtot;
-  printf("\n###########################################\n");
-  printf("\n            ACCEUIL                \n\n");
+  //Verifie accessibilité au fichier
+  f = fopen(nom, "r");
+  if (f == NULL) {
+    printf("Le produit que vous chercher n'existe pas.\n");  
+  }
+  else{
+    while(fgets(str, 50, f) != NULL){
+      nb_a++;
+    }
+    nb_a -= 4;
+  }
+  fclose(f);
+  
+  printf("################################ \n\n");
+  printf("            ACCEUIL                \n\n");
 
+  Purchases(nom, nb_a);
+  
   printf("Appuyer sur:\n\n 1 - Recherche/Achat d'un maillot\n\n 2 - Supprimer votre compte\n\n 3 - Deconnexion\n\n");
-  scanf("%d",&choix);
+
+  //Verifie l'entree utilisateur
+  if(scanf("%d",&choix) != 1){
+    printf("Choix invalide. Entrez un entier.\n\n");
+
+    //Vide le flux d'entrée
+    int e;
+    while((e = getchar()) != '\n' && e != EOF){}
+  }
     
   switch(choix){
     case 1:
-      Search_and_buy_Produit();
-      printf("Voulez vous achetez un autre article: (1 pour oui)(2 pour non):\n");
-      scanf("%d",&choixA);
-      if(choixA==1){
-        Search_and_buy_Produit();
-        home();
-      }
-      else if(choixA==2){
-        home();
-      }
-      else{
-        printf("Erreur de saisie...");
-        exit(1);
-      }
+      Search_and_buy_Produit(prixtot,nom,nb_a);
+      home(nom);
       break;
     
     case 2:
       delete_customer();
+      printf("\nPassez une bonne journée, au revoir ! \n");
       break;
     
     case 3:
-      printf("\nVous êtes déconnecté\n");
+      printf("\n< Vous êtes déconnecté >\n");
+      printf("\nPassez une bonne journée, au revoir ! \n");
       break;
+    
     default :
-      printf("Erreur de saisie...");
-      home();
+      printf("< Erreur de saisie... >\n\n");
+      home(nom);
       break;
     }
   }
@@ -773,25 +1005,33 @@ void home(){
 // Mode Achat
 void Buy(){
   int choix1;
+  char nom[50];
 
   printf("     CONNEXION/INSCRIPTION     \n\n");
 
   printf("Appuyer sur:\n\n 1 - Connexion \n\n 2 - Inscription \n\n 3 - Quitter\n\n");
-  scanf("%d",&choix1);
+
+  //Verifie l'entree utilisateur
+  if(scanf("%d",&choix1) != 1){
+    printf("Choix invalide. Entrez un entier.\n\n");
+
+    //Vide le flux d'entrée
+    int e;
+    while((e = getchar()) != '\n' && e != EOF){}
+  }
     
 
   switch(choix1){
     case 1 :
-      if(login()==0){
-        home();
-      }
+      strcpy(nom, login());
+      home(nom);
       break;
       
     case 2 :
       printf("\nVous allez créer votre compte\n\n");
-      Client client=create_customer();
-      FILE*fichierclient=FichiersClient(client);
-      printf("\nVotre compte est créer vous devez vous connecter pour y accéder\n\n");
+      Customer client = create_customer();
+      FILE* fichierclient = FilesCustomers(client);
+      printf("\nVotre compte est créer vous devez vous reconnecter pour y accéder\n\n");
       break;
 
     case 3:
@@ -799,15 +1039,11 @@ void Buy(){
       break;
     
     default :
-      printf("Erreur de saisie...");
+      printf("< Erreur de saisie... >\n\n");
       Buy();
       break;
   }
 }
-
-
-
-
 
 
 
@@ -831,9 +1067,9 @@ int main(void) {
   }
   else if(strcmp(mode, "achat") == 0) {
     printf("\n");
-    printf("################################ \n");
-    printf("             MODE ACHAT \n");
-    printf("################################ \n");
+    printf("\n################################ \n");
+    printf("          MODE ACHAT \n");
+    printf("################################ \n\n");
     printf("\n");
     Buy();
   }
